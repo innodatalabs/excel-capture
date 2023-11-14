@@ -1,0 +1,31 @@
+[project]
+name = "excel-capture"
+version = "0.0.1"
+license = { file = "LICENSE" }
+authors = [
+    { name="Mike Kroutikov", email="mkroutikov@innodata.com" },
+]
+description = "Captures Excel workbook as a set of PNG images"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+]
+dependencies = [
+    'excel2img >= 1.4.0',
+    'Pillow >= 10.1.0',
+    'pypiwin32 >= 223',
+    'pywin32 >= 306',
+]
+
+[project.urls]
+"Homepage" = "https://github.com/innodatalabs/excel-capture"
+"Bug Tracker" = "https://github.com/innodatalabs/excel-capture"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
