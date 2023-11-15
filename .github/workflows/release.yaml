@@ -33,11 +33,11 @@ jobs:
           type: 'zip'
           directory: dist
           path: 'excel_capture'
-          filename: excel-capture-${{ steps.date.outpus.time }}-${{ github.run_number }}.zip'
+          filename: excel-capture-${{ steps.date.outputs.time }}-${{ github.run_number }}.zip'
       - name: Upload Release
         uses: ncipollo/release-action@v1.12.0
         with:
-          tag: release-${{ steps.date.outpus.time }}-${{ github.run_number }}
+          tag: release-${{ steps.date.outputs.time }}-${{ github.run_number }}
           commit: master
-          artifacts: dist/excel-capture-${{ steps.date.outpus.time }}-${{ github.run_number }}.zip'
+          artifacts: dist/excel-capture-${{ steps.date.outputs.time }}-${{ github.run_number }}.zip'
           token: ${{ secrets.GITHUB_TOKEN }}
