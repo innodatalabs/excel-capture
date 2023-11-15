@@ -23,33 +23,13 @@ jobs:
           set PYTHONIOENCODING=utf-8
           pyinstaller excel_capture.py
       - name: Zip it
-        uses: montudor/action-zip@v1
+        uses: thedoctor0/zip-release@0.7.5
         with:
-          args: zip -qq -r excel-capture-${{ github.run_number }}.zip dist
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          type: 'zip'
+          path: 'dist'
+          filename: excel-capture-${{ github.run_number }}.zip'
+      - name: Upload Release
+        uses: ncipollo/release-action@v1.12.0
         with:
-          tag_name: ${{ github.run_number }}
-          release_name: Release ${{ github.run_number }}
-          body: |
-            Automatic release ${{ github.run_number }}
-          draft: true
-          prerelease: false
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: excel-capture-${{ github.run_number }}.zip
-          asset_name: excel-capture-${{ github.run_number }}.zip
-          asset_content_type: application/zip
-      - name: Publish release
-        uses: StuYarrow/publish-release@v1.1.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          id: ${{ steps.create_release.outputs.id }}
+          artifacts: excel-capture-${{ github.run_number }}.zip'
+          token: ${{ secrets.GITHUB_TOKEN }}
