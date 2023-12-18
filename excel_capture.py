@@ -2,7 +2,7 @@ import os
 import tempfile
 import shutil
 from excel2img.excel2img import ExcelFile
-from PIL import ImageGrab
+from PIL import ImageGrab, Image
 
 def column_index_to_address(index):
     a = 'ABCDEFGHIJKLMNOPQRSTUVQXYZ'[index % 26]
@@ -19,7 +19,7 @@ COPY_MODE_PRINT = 2
 COPY_AS_VECTOR = -4147
 COPY_AS_BITMAP = 2
 
-def main(filename, fast=False):
+def main(filename, fast=False, max_width=0):
 
     name, ext = os.path.splitext(filename)
 
@@ -56,6 +56,10 @@ def main(filename, fast=False):
 
                 sheet.Range(cell_range).CopyPicture(COPY_MODE_SCREEN, COPY_AS_BITMAP)
                 im = ImageGrab.grabclipboard()
+                width, height = im.size
+                if max_width > 0 and max_width > width:
+                    print(f'\tre-sizing to width {max_width}')
+                    im = im.resize(max_width, int(max_width * height / width), Image.Resampling.LANCZOS)
                 img_filename = f'{name}-{i:02d}-{sheet.Name}.png'
                 im.save(img_filename, 'PNG')
                 print(f'\twritten sheet as {img_filename}')
@@ -67,7 +71,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Intelligently captures Excel workbook as images (one per sheet)')
     parser.add_argument('filename', help='Excel workbook filename')
     parser.add_argument('--fast', '-f', action='store_true', help='Skip searching for the tight image boundaries (for speed)')
+    parser.add_argument('--max-width', '-w', type=int, default=0, help='If set to non-zero valy, re-scales large images to fit the given max-width (in pixels)')
 
     args = parser.parse_args()
 
-    main(args.filename, args.fast)
+    main(args.filename, args.fast, args.max_width)

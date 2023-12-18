@@ -5,7 +5,7 @@ Captures Excel workbook as a set of PNG images
 ## Usage
 
 ```bash
-python -m excel_capture [-f/--fast] <excel-filename>
+python -m excel_capture [-f/--fast] [-w <max-width>] <excel-filename>
 ```
 
 Tool will create images in the same directory as `<excel-filename>` - one for each worksheet.
