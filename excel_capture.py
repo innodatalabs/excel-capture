@@ -81,7 +81,6 @@ if __name__ == '__main__':
     parser.add_argument('filename', help='Excel workbook filename')
     parser.add_argument('--fast', '-f', action='store_true', help='Skip searching for the tight image boundaries (for speed)')
     parser.add_argument('--max-width', '-w', type=int, default=sys.maxsize, help='If set, and image width exceeds the value, re-scales large images to fit the given max-width (in pixels)')
-    parser.add_argument('--max-height', '-h', type=int, default=sys.maxsize, help='If set, and image height exceeds the value, re-scales large images to fit the given max-height (in pixels)')
 
     args = parser.parse_args()
 
