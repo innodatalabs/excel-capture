@@ -1,4 +1,5 @@
 import os
+import sys
 import tempfile
 import shutil
 from excel2img.excel2img import ExcelFile
@@ -19,7 +20,7 @@ COPY_MODE_PRINT = 2
 COPY_AS_VECTOR = -4147
 COPY_AS_BITMAP = 2
 
-def main(filename, fast=False, max_width=0):
+def main(filename, fast=False, max_width=sys.maxint, max_height=sys.maxint):
 
     name, ext = os.path.splitext(filename)
 
@@ -57,9 +58,17 @@ def main(filename, fast=False, max_width=0):
                 sheet.Range(cell_range).CopyPicture(COPY_MODE_SCREEN, COPY_AS_BITMAP)
                 im = ImageGrab.grabclipboard()
                 width, height = im.size
-                if max_width > 0 and max_width > width:
-                    print(f'\tre-sizing to width {max_width}')
-                    im = im.resize(max_width, int(max_width * height / width), Image.Resampling.LANCZOS)
+                if width > max_width or height > max_height:
+                    print(f'\tre-sizing to max-width {max_width} and max-height {max_height}')
+                    im_width = width
+                    im_height = height
+                    if im_width > max_width:
+                        im_width = max_width
+                        im_height = int(max_width * im_height / im_width)
+                    if im_height > max_height:
+                        im_height = max_height
+                        im_width = int(max_height * im_width / im_height)
+                    im = im.resize((im_width, im_height), Image.Resampling.LANCZOS)
                 img_filename = f'{name}-{i:02d}-{sheet.Name}.png'
                 im.save(img_filename, 'PNG')
                 print(f'\twritten sheet as {img_filename}')
@@ -67,12 +76,14 @@ def main(filename, fast=False, max_width=0):
 
 if __name__ == '__main__':
     import argparse
+    import sys
 
     parser = argparse.ArgumentParser(description='Intelligently captures Excel workbook as images (one per sheet)')
     parser.add_argument('filename', help='Excel workbook filename')
     parser.add_argument('--fast', '-f', action='store_true', help='Skip searching for the tight image boundaries (for speed)')
-    parser.add_argument('--max-width', '-w', type=int, default=0, help='If set to non-zero valy, re-scales large images to fit the given max-width (in pixels)')
+    parser.add_argument('--max-width', '-w', type=int, default=sys.maxint, help='If set to non-zero value, re-scales large images to fit the given max-width (in pixels)')
+    parser.add_argument('--max-height', '-h', type=int, default=sys.maxint, help='If set to non-zero value, re-scales large images to fit the given max-height (in pixels)')
 
     args = parser.parse_args()
 
-    main(args.filename, args.fast, args.max_width)
+    main(args.filename, args.fast, args.max_width, args.max_height)
