@@ -84,4 +84,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    main(args.filename, args.fast, args.max_width, args.max_height)
+    main(args.filename, args.fast, args.max_width)
